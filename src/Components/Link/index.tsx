@@ -30,6 +30,7 @@ const Link = () => {
           return;
         }
         const data = await response.json();
+        console.log({ data })
         dispatch({
           type: "SET_STATE",
           state: {
@@ -69,7 +70,7 @@ const Link = () => {
 
   return (
     <Button type="button" large onClick={() => open()} disabled={!ready}>
-      Launch Link
+      Sing in with Plaid
     </Button>
   );
 };

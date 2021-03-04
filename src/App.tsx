@@ -70,15 +70,9 @@ const App = () => {
   }, [dispatch, generateToken, getInfo]);
 
   return (
-    <div className={styles.App}>
+    <div className={styles.appcontainer}>
       <div className={styles.container}>
         <Header />
-        {linkSuccess && isItemAccess && (
-          <>
-            <Products />
-            <Items />
-          </>
-        )}
       </div>
     </div>
   );

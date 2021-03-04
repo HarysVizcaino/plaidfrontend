@@ -3,9 +3,10 @@
 .grid {
   width: 100%;
   display: flex;
-  flex-direction: column;
-  margin: auto;
-  margin-bottom: 2 * $unit;
+  justify-content: center;
+  // flex-direction: column;
+  // margin: auto;
+  // margin-bottom: 2 * $unit;
 }
 
 .title {
