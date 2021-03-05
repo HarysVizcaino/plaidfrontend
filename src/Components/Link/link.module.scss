@@ -1,0 +1,24 @@
+button {
+    background-color: #FFFFFF;
+    width: 100%;
+    border: none;
+    padding: 16px 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.buttonText {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.description {
+    color: #4b4b4b;
+    padding-bottom: 16px;
+    font-weight: 100;
+    font-size: 12px;
+    border-bottom: solid 1px #CCC;
+    margin: 0 16px;
+}

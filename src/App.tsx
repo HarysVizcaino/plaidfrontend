@@ -7,6 +7,10 @@ import Context from "./Context";
 
 import styles from "./App.module.scss";
 
+declare global {
+  interface Window { ReactNativeWebView: any; } 
+}
+
 const App = () => {
   const { linkSuccess, isItemAccess, dispatch } = useContext(Context);
 
@@ -52,6 +56,7 @@ const App = () => {
 
   useEffect(() => {
     const init = async () => {
+
       const { paymentInitiation } = await getInfo(); // used to determine which path to take when generating token
       // do not generate a new token for OAuth redirect; instead
       // setLinkToken from localStorage

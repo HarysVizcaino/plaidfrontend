@@ -1,11 +1,20 @@
 import React, { useEffect, useContext } from "react";
 import { usePlaidLink } from "react-plaid-link";
-import Button from "plaid-threads/Button";
+// import Button from "plaid-threads/Button";
 
 import Context from "../../Context";
+import ArrowRight from './ArrowRight';
+
+import styles from "./link.module.scss";
 
 const Link = () => {
   const { linkToken, dispatch } = useContext(Context);
+
+  const sendDataToDevice = (data: string) => {
+    if (window.ReactNativeWebView) {
+      window.ReactNativeWebView.postMessage(data)
+    }
+  }
 
   const onSuccess = React.useCallback(
     (public_token: string) => {
@@ -30,7 +39,8 @@ const Link = () => {
           return;
         }
         const data = await response.json();
-        console.log({ data })
+        console.log(data)
+        sendDataToDevice(data.access_token);
         dispatch({
           type: "SET_STATE",
           state: {
@@ -69,9 +79,15 @@ const Link = () => {
   }, [ready, open, isOauth]);
 
   return (
-    <Button type="button" large onClick={() => open()} disabled={!ready}>
-      Sing in with Plaid
-    </Button>
+    <div>
+      <p className={styles.description}>
+      Transfer money from your US bank to your Folionet account Easily deposito and withdraw funds without commision
+      </p>
+    <button className={styles.button} type="button" onClick={() => open()} disabled={!ready}>
+      <p className={styles.buttonText}>Choose your bank</p>
+      <ArrowRight />
+    </button>
+    </div>
   );
 };
 
