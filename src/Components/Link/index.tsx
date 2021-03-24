@@ -4,9 +4,9 @@ import { usePlaidLink } from "react-plaid-link";
 
 import Context from "../../Context";
 import ArrowRight from './ArrowRight';
-
 import styles from "./link.module.scss";
 
+const apiURl = 'http://folionet-api-dev.eba-mjcz8maz.us-east-1.elasticbeanstalk.com/api/v1';
 const Link = () => {
   const { linkToken, dispatch } = useContext(Context);
 
@@ -19,13 +19,18 @@ const Link = () => {
   const onSuccess = React.useCallback(
     (public_token: string) => {
       // send public_token to server
+      console.log({ public_token })
       const setToken = async () => {
-        const response = await fetch("/api/set_access_token", {
+        const response = await fetch(`${apiURl}/plaid/access_token`, {
           method: "POST",
           headers: {
-            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTY2ODUyNjksInN1YiI6MX0.ukKv1F6rp86dYJX8bNobr4qUP63hV9knBjqGBFARwWg'
           },
-          body: `public_token=${public_token}`,
+          body: JSON.stringify({
+            public_token: public_token
+          }),
         });
         if (!response.ok) {
           dispatch({

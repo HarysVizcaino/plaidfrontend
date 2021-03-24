@@ -7,6 +7,8 @@ import Context from "./Context";
 
 import styles from "./App.module.scss";
 
+const apiURl = 'http://folionet-api-dev.eba-mjcz8maz.us-east-1.elasticbeanstalk.com/api/v1';
+
 declare global {
   interface Window { ReactNativeWebView: any; } 
 }
@@ -37,9 +39,12 @@ const App = () => {
     async (paymentInitiation) => {
       const path = paymentInitiation
         ? "/api/create_link_token_for_payment"
-        : "/api/create_link_token";
-      const response = await fetch(path, {
+        : "/plaid/link_token";
+      const response = await fetch(`${apiURl}/${path}`, {
         method: "POST",
+        headers: {
+          Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTY2ODUyNjksInN1YiI6MX0.ukKv1F6rp86dYJX8bNobr4qUP63hV9knBjqGBFARwWg'
+        }
       });
       if (!response.ok) {
         dispatch({ type: "SET_STATE", state: { linkToken: null } });
@@ -57,7 +62,7 @@ const App = () => {
   useEffect(() => {
     const init = async () => {
 
-      const { paymentInitiation } = await getInfo(); // used to determine which path to take when generating token
+      //const { paymentInitiation } = await getInfo(); // used to determine which path to take when generating token
       // do not generate a new token for OAuth redirect; instead
       // setLinkToken from localStorage
       if (window.location.href.includes("?oauth_state_id=")) {
@@ -69,7 +74,7 @@ const App = () => {
         });
         return;
       }
-      generateToken(paymentInitiation);
+      generateToken(false);
     };
     init();
   }, [dispatch, generateToken, getInfo]);
