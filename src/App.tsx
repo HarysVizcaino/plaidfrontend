@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useCallback } from "react";
+import React, { useEffect, useContext, useCallback, useState } from "react";
 
 import Header from "./Components/Headers";
 import Products from "./Components/ProductTypes/Products";
@@ -14,7 +14,9 @@ declare global {
 }
 
 const App = () => {
-  const { linkSuccess, isItemAccess, dispatch } = useContext(Context);
+  const { linkSuccess, folionetToken, isItemAccess, dispatch } = useContext(Context);
+  const [loading, setLoading] = useState(true)
+  const [veo, setVeo] = useState('')
 
   const getInfo = useCallback(async () => {
     const response = await fetch("/api/info", { method: "POST" });
@@ -35,6 +37,12 @@ const App = () => {
     return { paymentInitiation };
   }, [dispatch]);
 
+  const getDataToDevice = (data: string) => {
+    if (window.ReactNativeWebView) {
+      window.ReactNativeWebView.postMessage(data)
+    }
+  }
+
   const generateToken = useCallback(
     async (paymentInitiation) => {
       const path = paymentInitiation
@@ -43,7 +51,7 @@ const App = () => {
       const response = await fetch(`${apiURl}/${path}`, {
         method: "POST",
         headers: {
-          Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTY2ODUyNjksInN1YiI6MX0.ukKv1F6rp86dYJX8bNobr4qUP63hV9knBjqGBFARwWg'
+          Authorization: `Bearer ${folionetToken}`
         }
       });
       if (!response.ok) {
@@ -51,15 +59,29 @@ const App = () => {
         return;
       }
       const data = await response.json();
-      if (data) {
-        dispatch({ type: "SET_STATE", state: { linkToken: data.link_token } });
+      if (data.status !== 500) {
+        dispatch({ type: "SET_STATE", state: { linkToken: data.data.link_token} });
+        localStorage.setItem("link_token", data.data.link_token); //to use later for Oauth
+        setLoading(false)
+      } else {
+        alert('something bad happened')
+        dispatch({ type: "SET_STATE", state: { linkToken: null } });
+        return;
       }
-      localStorage.setItem("link_token", data.link_token); //to use later for Oauth
     },
-    [dispatch]
+    [dispatch, folionetToken]
   );
 
+
   useEffect(() => {
+    window.addEventListener('message', data => {
+     // do something
+     const objData = JSON.parse(data.data)
+     if(objData.folionetToken) {
+       dispatch({ type: "SET_STATE", state: { folionetToken: objData.folionetToken} });
+     }
+    });
+
     const init = async () => {
 
       //const { paymentInitiation } = await getInfo(); // used to determine which path to take when generating token
@@ -76,13 +98,26 @@ const App = () => {
       }
       generateToken(false);
     };
-    init();
+    if(folionetToken) {
+      init();
+    }
   }, [dispatch, generateToken, getInfo]);
 
   return (
     <div className={styles.appcontainer}>
       <div className={styles.container}>
-        <Header />
+        {
+          loading ? (
+            <div>
+              <p>Loading</p>
+            </div>
+          ) : (
+            <>
+            <p>{ veo }</p>
+            <Header />
+            </>
+          )
+        }
       </div>
     </div>
   );

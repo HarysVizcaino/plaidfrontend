@@ -13,6 +13,7 @@ const Header = () => {
     itemId,
     accessToken,
     linkToken,
+    folionetToken,
     linkSuccess,
     isItemAccess,
     backend,
@@ -25,6 +26,7 @@ const Header = () => {
         <>
           {/* message if backend is not running and there is no link token */}
           {linkToken == null || backend === false ? (
+            
             <Callout warning>
               Unable to fetch link_token: please make sure your backend server
               is running and that your .env file has been configured with your

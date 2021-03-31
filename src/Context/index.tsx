@@ -3,6 +3,7 @@ import { createContext, useReducer, Dispatch, ReactNode } from "react";
 interface QuickstartState {
   linkSuccess: boolean;
   isItemAccess: boolean;
+  folionetToken: string;
   linkToken: string | null;
   accessToken: string | null;
   itemId: string | null;
@@ -14,6 +15,7 @@ interface QuickstartState {
 const initialState: QuickstartState = {
   linkSuccess: false,
   isItemAccess: true,
+  folionetToken: "",
   linkToken: "", // Don't set to null or error message will show up briefly when site loads
   accessToken: null,
   itemId: null,
